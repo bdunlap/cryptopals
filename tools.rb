@@ -1,14 +1,13 @@
 require 'base64'
 
 def hex_to_base64(hex_string)
-    bytes = hex_to_bin(hex_string)
-    Base64.strict_encode64(bytes)
+    Base64.strict_encode64([hex_string].pack('H*'))
 end
 
-def hex_to_bin(hex_string)
-    bytes = []
-    hex_string.scan(/../) do |encoded_byte|
-        bytes << encoded_byte.to_i(16).chr
+def fixed_xor(a_hex, b_hex)
+    if (a_hex.length != b_hex.length)
+        raise 'need equal-length inputs'
     end
-    bytes.join('')
+
+    (a_hex.to_i(16) ^ b_hex.to_i(16)).to_s(16)
 end
