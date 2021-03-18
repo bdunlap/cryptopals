@@ -47,6 +47,7 @@ class Hex
   end
   
   def hamming_distance(other)
+    raise "hamming distance requires equal-length operands" unless bits.length == other.bits.length
     bits.map.with_index { |bit, i| bit == other.bits[i] ? 0 : 1 }
     .reduce(:+)
   end
