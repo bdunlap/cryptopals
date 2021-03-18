@@ -24,6 +24,10 @@ class Hex
     [binstr].pack('m0')
   end
 
+  def bits
+    binstr.unpack('B*')[0].chars
+  end
+
   def fixed_xor(xorand)
     raise "fixed XOR requires equal-length operands" unless @string.length == xorand.to_s.length
 
@@ -47,6 +51,11 @@ class Hex
     end
     .sort { |a, b| b['score'] <=> a['score'] }
     .first['plaintext']
+  end
+  
+  def hamming_distance(other)
+    bits.map.with_index { |bit, i| bit == other.bits[i] ? 0 : 1 }
+    .reduce(:+)
   end
 
 

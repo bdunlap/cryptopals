@@ -49,5 +49,12 @@ class Set1Test < Test::Unit::TestCase
     )
   end
 
+  def test_hamming
+    assert_equal(
+      37,
+      'this is a test'.to_hex.hamming_distance('wokka wokka!!!'.to_hex)
+    )
+  end
+
 end
 
