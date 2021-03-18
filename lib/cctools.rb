@@ -26,17 +26,14 @@ class Hex
 
   def fixed_xor(xorand)
     raise "fixed XOR requires equal-length operands" unless @string.length == xorand.to_s.length
-    Hex.new(
-      bytes.map.with_index { |byte, i| byte ^ xorand.bytes[i] }
-      .reduce("") { |s, byte| s + sprintf("%02x", byte) }
-    )
+
+    bytes.map.with_index { |byte, i| byte ^ xorand.bytes[i] }
+    .to_hex
   end
 
   def repeating_key_xor(key)
-    Hex.new(
-      bytes.map.with_index { |byte, i| byte ^ key.bytes[i % key.bytes.length] }
-      .reduce("") { |s, byte| s + sprintf("%02x", byte) }
-    )
+    bytes.map.with_index { |byte, i| byte ^ key.bytes[i % key.bytes.length] }
+    .to_hex
   end
 
   def decrypt_single_char_xor
@@ -77,7 +74,14 @@ class String
   end
 
   def to_hex
-    Hex.new(chars.reduce("") { |s, char| s + sprintf("%02x", char.ord) })
+    chars.map { |c| c.ord }
+    .to_hex
+  end
+end
+
+class Array
+  def to_hex
+    Hex.new(reduce("") { |str, e| str + sprintf("%02x", e) })
   end
 end
 
