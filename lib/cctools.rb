@@ -8,36 +8,29 @@ class Hex
     @string
   end
 
+  def to_b64
+    [binstr].pack('m0')
+  end
+
   def binstr
     @binstr ||= [@string].pack('H*')
   end
 
   def bytes
-    @bytes ||= binstr.chars.map { |binchar| binchar.ord }
-  end
-  
-  def to_i
-    @string.to_i(16)
-  end
-
-  def to_b64
-    [binstr].pack('m0')
+    @bytes ||= binstr.bytes
   end
 
   def bits
-    binstr.unpack('B*')[0].chars
+    @bits ||= binstr.unpack('B*')[0].chars
   end
-
+  
   def fixed_xor(xorand)
     raise "fixed XOR requires equal-length operands" unless @string.length == xorand.to_s.length
-
-    bytes.map.with_index { |byte, i| byte ^ xorand.bytes[i] }
-    .to_hex
+    xor(xorand).to_hex
   end
 
   def repeating_key_xor(key)
-    bytes.map.with_index { |byte, i| byte ^ key.bytes[i % key.bytes.length] }
-    .to_hex
+    xor(key).to_hex
   end
 
   def decrypt_single_char_xor
@@ -58,6 +51,11 @@ class Hex
     .reduce(:+)
   end
 
+  private
+
+  def xor(xorand)
+    bytes.map.with_index { |byte, i| byte ^ xorand.bytes[i % xorand.bytes.length] }
+  end
 
 end
 
